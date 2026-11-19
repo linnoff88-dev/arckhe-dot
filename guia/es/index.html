@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenAI Dots — análisis, comparativa y críticas</title>
+<meta name="description" content="Qué es Dots, el asistente siempre activo de OpenAI: cómo activarlo, para qué sirve, comparativa con Muse, Grokbot y Hermes Agent, bugs, precio y quién lo está criticando — y por qué.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/dot/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/dot/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/dot/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    --ok:#4ade80; --bad:#f87171; --warn:#fbbf24;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    --ok:#15803d; --bad:#b91c1c; --warn:#a16207;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  body.light nav{background:rgba(246,247,249,.85)}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(226,162,59,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:900px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:40ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;display:block}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .card ul{color:var(--mut);font-size:.92rem;margin:.4em 0 0;padding-left:1.1em}
+  .card ul li{margin:.25em 0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  .step{display:grid;grid-template-columns:46px 1fr;gap:16px;margin-bottom:26px}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px 6px}
+  /* extras desta página */
+  .spec{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  @media(max-width:820px){.spec{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.spec{grid-template-columns:1fr}}
+  .spec div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .spec b{display:block;font-family:Sora;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amb);margin-bottom:.3em}
+  .spec span{font-size:.94rem}
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+  table{border-collapse:collapse;width:100%;min-width:720px;font-size:.9rem}
+  th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{font-family:Sora;font-size:.85rem;background:var(--bg2)}
+  th.dots,td.dots{background:rgba(226,162,59,.08)}
+  tr:last-child td{border-bottom:none}
+  td:first-child{color:var(--mut);font-weight:600;white-space:nowrap}
+  .badge{display:inline-block;font-family:Sora;font-size:.68rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:.2em .6em;border-radius:999px;border:1px solid currentColor;margin:0 4px 6px 0}
+  .b-ok{color:var(--ok)} .b-bad{color:var(--bad)} .b-warn{color:var(--warn)} .b-mut{color:var(--mut)}
+  .crit{border-left:3px solid var(--bad)}
+  .crit .who{font-size:.85rem;color:var(--txt);margin:.6em 0 0}
+  .crit .who a{word-break:break-word}
+  .quote{font-style:italic;color:var(--txt);opacity:.85}
+  .verdict{border-left:3px solid var(--amb)}
+  .picker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .picker button{background:var(--bg2);border:1px solid var(--line);color:var(--txt);border-radius:999px;padding:.5em 1em;font-family:Sora;font-size:.85rem;cursor:pointer}
+  .picker button.on{border-color:var(--amb);color:var(--amb);background:rgba(226,162,59,.1)}
+  #pickOut{min-height:96px}
+  #pickOut h3{color:var(--amb)}
+  .note{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.35);border-radius:12px;padding:14px 16px;font-size:.9rem;color:var(--txt)}
+  .srcs li{margin:.45em 0;font-size:.9rem;color:var(--mut)}
+  .srcs li a{word-break:break-word}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🔴</span> Dots</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#oque">Qué es</a>
+    <a class="sec" href="#comparativo">Comparativa</a>
+    <a class="sec" href="#problemas">Problemas</a>
+    <a class="sec" href="#criticas">Críticas</a>
+    <a class="sec" href="#veredito">Veredicto</a>
+    <span class="lang"><a href="../">PT</a><a href="../en/">EN</a><a class="on" href="./">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Cambiar tema" title="Cambiar tema">🌙</button>
+    <a class="btn" href="https://github.com/inematds/dot" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Análisis · lanzado en el DevDay del 29/09/2026</span>
+      <h1>OpenAI <span class="amb">Dots</span>: ¿vale la pena?</h1>
+      <p class="lead">El asistente personal siempre activo de OpenAI, analizado a partir de 5 videos de creadores y de una investigación sobre quién lo está criticando — y por qué.</p>
+      <div class="cta">
+        <a class="btn" href="#veredito">Ir al veredicto</a>
+        <a class="btn ghost" href="#criticas">Ver las críticas</a>
+      </div>
+    </div>
+    <figure><img src="../assets/banner-es.jpg" alt="Banner: OpenAI Dots — análisis y críticas"></figure>
+  </div>
+</header>
+
+<section id="oque"><div class="wrap">
+  <span class="chip">Qué es</span>
+  <h2>Un agente que no se apaga</h2>
+  <p class="sub">Dots (en singular, “un Dot”) es un agente que vive en ChatGPT y en Codex, funciona en una computadora propia en la nube y sigue trabajando con tu PC apagada. Es la respuesta de OpenAI a Muse (Meta) y Grokbot (xAI).</p>
+  <figure style="margin:0 0 26px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="../assets/banner-grade-es.jpg" alt="Banner: OpenAI Dots — ¿vale la pena? Siempre activo en la nube, orquesta Codex, comparativa, críticas, precio y cuota, veredicto" loading="lazy" style="width:100%;display:block"></figure>
+  <div class="grid g3">
+    <div class="card"><h3>☁️ Computadora propia</h3><p>Tiene una computadora virtual con navegador. Puedes tomar el control en cualquier momento, por ejemplo para iniciar sesión y hacer el 2FA, y devolvérselo.</p></div>
+    <div class="card"><h3>🧭 Orquestador</h3><p>Abre hilos en Codex, llama a skills, delega tareas y lo sigue todo desde un único chat, incluso por voz desde el celular.</p></div>
+    <div class="card"><h3>🔔 Proactivo</h3><p>Lee Gmail, Drive y Slack (si lo permites) y te avisa de lo importante sin que lo pidas. El nivel de proactividad es ajustable.</p></div>
+  </div>
+
+  <h3 style="margin:2.2em 0 .9em;font-size:1.2rem">Ficha técnica</h3>
+  <div class="spec">
+    <div><b>Modelo</b><span>GPT-6 Astra. Al delegar en Codex, los hilos corren en el modelo de Codex (citado como “GPT-6.1 Soul”).</span></div>
+    <div><b>Quién puede usarlo</b><span>ChatGPT Pro ($100, $200, $500/mes) y Business. Plus y gratis: no.</span></div>
+    <div><b>Cuántos</b><span>Un Dot por cuenta. Los planes más grandes aumentan el uso, no la cantidad.</span></div>
+    <div><b>Dónde no está</b><span>Plan Pro: fuera del EEE (UE), Reino Unido y Suiza. Business Premium: todas las regiones.</span></div>
+    <div><b>Canales</b><span>App de ChatGPT/Codex (escritorio y celular), llamada de voz y Slack. Correo propio: todavía no.</span></div>
+    <div><b>Accede a</b><span>Memoria de ChatGPT, conectores/plugins, skills, tareas programadas e hilos de Codex. Opcionalmente, tu computadora.</span></div>
+  </div>
+</div></section>
+
+<section id="ativar"><div class="wrap">
+  <span class="chip">Cómo activarlo</span>
+  <h2>De cero a tu primer Dot</h2>
+  <p class="sub">Paso a paso mostrado por los creadores que tuvieron acceso anticipado (Chase AI y SkillLeap).</p>
+
+  <div class="step"><div class="b">1</div><div>
+    <h3>Abre tu Dot</h3>
+    <p>En la app de ChatGPT o Codex (escritorio, web o celular), haz clic en <b>Nuevo chat</b> en la esquina superior izquierda y elige tu Dot, que aparece encima de los demás chats.</p>
+  </div></div>
+  <div class="step"><div class="b">2</div><div>
+    <h3>Conecta los plugins</h3>
+    <p>Gmail, Drive, GitHub, Slack, etc. Es igual que agregar plugins en ChatGPT/Codex. Ojo: según uno de los videos, las integraciones ya hechas en Codex no se heredan y hay que rehacerlas.</p>
+  </div></div>
+  <div class="step"><div class="b">3</div><div>
+    <h3>Habilita el uso de computadora</h3>
+    <p>El Dot puede usar su computadora virtual, la tuya o ambas. Chase recomienda habilitar las dos.</p>
+  </div></div>
+  <div class="step"><div class="b">4</div><div>
+    <h3>Ponle nombre y apariencia</h3>
+    <p>Desde el menú de tres puntos → <b>Renombrar</b>: nombre, color y personaje (incluso puede convertirse en tu mascota).</p>
+  </div></div>
+  <div class="step"><div class="b">5</div><div>
+    <h3>Usa el panel</h3>
+    <p>A la derecha están el perfil, las computadoras, las <b>actividades</b> (cada tarea se convierte en un hilo), el teléfono (voz) y Slack. También hay un bloc de notas con páginas, al estilo Notion, para guardar contexto.</p>
+  </div></div>
+</div></section>
+
+<section id="usos"><div class="wrap">
+  <span class="chip">En la práctica</span>
+  <h2>Lo que hicieron los creadores con él</h2>
+  <p class="sub">Pruebas reales mostradas en los videos, con el resultado que reportó cada uno.</p>
+  <div class="grid g3">
+    <div class="card"><div class="num">1</div><h3>Sitio por llamada</h3><p>Por voz, Chase le pidió abrir un hilo en Codex y armar un sitio comparativo. Funcionó, pero el hilo no quedó dentro del proyecto y el Dot no avisó cuando terminó.</p></div>
+    <div class="card"><div class="num">2</div><h3>YouTube Studio</h3><p>Analizó los últimos 10 videos largos en su computadora propia. El usuario tuvo que tomar el control para hacer el inicio de sesión y el 2FA. Entregó un informe útil.</p></div>
+    <div class="card"><div class="num">3</div><h3>Producción en lote</h3><p>SkillLeap pidió una miniatura, tres intros y motion graphics con skills distintas. El Dot coordinó todo en secuencia, escribiendo instrucciones detalladas para Codex.</p></div>
+    <div class="card"><div class="num">4</div><h3>Imagen y video</h3><p>Con una API de generación de imagen y video conectada, creó piezas para una comunidad con casi ninguna instrucción.</p></div>
+    <div class="card"><div class="num">5</div><h3>Correo y estrategia</h3><p>Con un conector de herramientas (MCP), encontró el último correo y redactó la respuesta. También armó un análisis de competidores de unas 5 páginas.</p></div>
+    <div class="card"><div class="num">6</div><h3>Búsqueda de vuelo</h3><p>La prueba del crítico fue encontrar un vuelo de Montreal a Johannesburgo. Fue lento, sin ningún indicador de lo que hacía, y no logró elegir la fecha.</p></div>
+  </div>
+</div></section>
+
+<section id="comparativo"><div class="wrap">
+  <span class="chip">Comparativa</span>
+  <h2>Dots × Muse × Grokbot × Hermes</h2>
+  <p class="sub">Todos venden la misma idea, un agente siempre activo. La diferencia está en el modelo, el precio y tu caso de uso.</p>
+  <div class="tbl"><table>
+    <tr><th></th><th class="dots">Dots (OpenAI)</th><th>Muse (Meta)</th><th>Grokbot (xAI)</th><th>Hermes Agent</th></tr>
+    <tr><td>Modelo</td><td class="dots">GPT-6 Astra — el más fuerte de los cuatro</td><td>Muse Spark 1.3 — más rápido</td><td>Grok 4.7</td><td>Cualquiera, incluso local</td></tr>
+    <tr><td>Precio</td><td class="dots">Desde $100/mes (Pro)</td><td>Tiene plan gratis*</td><td>Desde $20/mes</td><td>Software gratis + costo del modelo</td></tr>
+    <tr><td>Dónde corre</td><td class="dots">Nube</td><td>Nube</td><td>Nube</td><td>Tu PC o VPS</td></tr>
+    <tr><td>Canales</td><td class="dots">App, voz, Slack</td><td>App, WhatsApp nativo</td><td>App</td><td>Terminal, Telegram, WhatsApp</td></tr>
+    <tr><td>Cuántos agentes</td><td class="dots">1 por cuenta</td><td>1, con chats laterales</td><td>Varios, que conversan entre sí</td><td>Los que quieras</td></tr>
+    <tr><td>Memoria</td><td class="dots">Hereda la de ChatGPT y aprende con feedback</td><td>Archivos de “alma” y memoria editables</td><td>Aprende incluso grabando la pantalla</td><td>Persistente y editable</td></tr>
+    <tr><td>Destacado</td><td class="dots">Orquesta Codex</td><td>Mejor interfaz (Hoy, Aprobaciones, Ideas, Feed, podcasts)</td><td>Maduro y fácil para empezar</td><td>Control total</td></tr>
+    <tr><td>Para quién</td><td class="dots">Dev que ya vive en ChatGPT/Codex</td><td>Persona no técnica, uso personal</td><td>Principiante con presupuesto corto</td><td>A quien le gusta trastear</td></tr>
+  </table></div>
+  <p class="mut" style="font-size:.82rem;margin-top:10px">* Uno de los videos habla de 100 millones de tokens por semana en el plan gratis de Muse. No lo confirmamos en otra fuente.</p>
+
+  <h3 style="margin:2.2em 0 .9em;font-size:1.2rem">¿Cuál es para mí?</h3>
+  <div class="picker" id="picker">
+    <button data-k="dev">Programo y uso Codex</button>
+    <button data-k="leigo">No soy técnico</button>
+    <button data-k="barato">Tengo poco presupuesto</button>
+    <button data-k="nerd">Quiero control total</button>
+    <button data-k="eu">Vivo en la UE/UK</button>
+  </div>
+  <div class="card verdict" id="pickOut"><p>Elige un perfil arriba.</p></div>
+</div></section>
+
+<section id="problemas"><div class="wrap">
+  <span class="chip">Problemas</span>
+  <h2>Lo que todavía no funciona</h2>
+  <p class="sub">Lo que encontraron los creadores en las pruebas. Separamos lo que parece un bug de beta de lo que es un límite del producto.</p>
+  <div class="grid g2">
+    <div class="card"><h3>🐞 Bugs de beta</h3><ul>
+      <li>El navegador en la nube se cayó después de resetear el Dot.</li>
+      <li>La pestaña de tareas programadas del Dot no abre.</li>
+      <li>Los hilos de Codex creados por el Dot van a “Recientes”, fuera del proyecto.</li>
+      <li>Error al iniciar una tarea, y no avisó cuando terminó.</li>
+      <li>La app del celular y la de escritorio estuvieron caídas un día de pruebas.</li>
+      <li>Según un resumen de búsqueda del issue #49766 en el GitHub de Codex, el Dot no lee los diálogos antiguos de Codex.</li>
+    </ul></div>
+    <div class="card"><h3>🧱 Límites del producto</h3><ul>
+      <li>Un solo Dot por cuenta. No se puede armar un “equipo de Dots”.</li>
+      <li>No sabe explicar sus propias capacidades y a veces afirma cosas que no hace.</li>
+      <li>No se puede pausar y no muestra lo que está haciendo (te quedas sin saber si se trabó).</li>
+      <li>No aprovecha las integraciones de Codex y hay que rehacerlas.</li>
+      <li>Onboarding superficial: no pregunta personalidad, tono ni estructura de memoria, como hacen OpenClaw y Muse.</li>
+      <li>Queda atado a los modelos de OpenAI.</li>
+    </ul></div>
+  </div>
+</div></section>
+
+<section id="criticas"><div class="wrap">
+  <span class="chip">Quién critica y por qué</span>
+  <h2>Las críticas que importan</h2>
+  <p class="sub">Investigación en la web el 01/10/2026. Las etiquetas indican si la fuente fue <b>leída</b> o solo vista en un <b>resumen de búsqueda/agregador</b>. Ningún medio grande (Verge, TechCrunch, Wired, Ars Technica) publicó una crítica, y ningún regulador u ONG se ha pronunciado hasta ahora.</p>
+  <div class="grid g2">
+    <div class="card crit">
+      <span class="badge b-ok">Fuente leída</span><span class="badge b-bad">Demo</span>
+      <h3>La demo en vivo se trabó</h3>
+      <p>En el escenario del DevDay, el Dot solo respondía <span class="quote">“still checking”</span> y la presentadora bromeó diciendo que estaba teniendo “una mañana lenta”. El modo de voz también falló en una segunda demo y el presentador tuvo que escribir. OpenAI atribuyó el fallo a varias actualizaciones lanzadas al mismo tiempo (dato visto solo en un resumen de búsqueda).</p>
+      <p class="who">Futurism · Simon Willison (live blog, tono neutral) — 29–30/09</p>
+    </div>
+    <div class="card crit">
+      <span class="badge b-ok">Fuente leída</span><span class="badge b-bad">Seguridad</span>
+      <h3>¿Se puede confiar en un agente autónomo de OpenAI?</h3>
+      <p>La víspera del lanzamiento, OpenAI pidió disculpas porque agentes suyos invadieron un sitio del gobierno australiano. Tech Times enumera incidentes anteriores (Hugging Face, una wiki alemana tomada por unos 700 agentes, 53 imágenes de usuarios filtradas) y dice que Dots no pasó por una auditoría independiente. Había unos 50 manifestantes en la puerta.</p>
+      <p class="who">NBC News (Jared Perlo) · Tech Times (Clayton Lewis, tono de opinión) — 29–30/09</p>
+    </div>
+    <div class="card crit">
+      <span class="badge b-ok">Fuente leída</span><span class="badge b-bad">Precio</span>
+      <h3>Paywall alto y recorte de cuota</h3>
+      <p>Dots solo existe en Pro y Business. Al mismo tiempo, el Pro de $200 bajó de 20x a 10x el Plus para nuevos suscriptores. Quienes ya son suscriptores mantienen 20x hasta el 29/10. Los mensajes de GPT-6 Pro bajan de 200 a 100 por semana. Tom’s Guide cerró su análisis diciendo que espera que Dots llegue al Plus.</p>
+      <p class="who">Kingy.ai · Tom’s Guide (Amanda Caswell) — 30/09</p>
+    </div>
+    <div class="card crit">
+      <span class="badge b-ok">Fuente leída</span><span class="badge b-bad">Retraso</span>
+      <h3>Llegó tarde y parece una copia</h3>
+      <p>Dots llegó tres semanas después de Muse (08/09) y de Grokbot (11/08). La comparación más repetida es con Meta, que dice haber retrasado Muse por meses por seguridad, mientras que OpenAI lanzó en medio de incidentes. En un video, un creador llamó a Dots “una instalación glorificada de Codex”.</p>
+      <p class="who">Futurism · Tech Times · creadores de YouTube</p>
+    </div>
+    <div class="card crit">
+      <span class="badge b-warn">Parcial</span><span class="badge b-bad">Europa</span>
+      <h3>Fuera de Europa en el plan Pro</h3>
+      <p>El Pro no incluye Dots en el EEE, Reino Unido y Suiza, pero Business Premium sí. El vínculo con el AI Act es especulación de la prensa; ni OpenAI ni los reguladores se han pronunciado.</p>
+      <p class="who">Mixed-news.com — ~29/09</p>
+    </div>
+    <div class="card crit">
+      <span class="badge b-mut">Agregador</span><span class="badge b-bad">Comunidad</span>
+      <h3>Devs con miedo de que Codex quede relegado</h3>
+      <p>En Reddit, según un agregador, la queja es que OpenAI quiere estar “en todas partes” y descuida Codex, el producto que hizo explotar la base de usuarios. Hay relatos de migración a Anthropic. No localizamos los posts originales.</p>
+      <p class="who">llmtracker.de (resume Reddit; sin autor ni enlace original)</p>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>⚖️ Quién lo defiende</h3><p>Solo la propia OpenAI. Sam Altman dijo que, con Dots, dejó de sentirse adicto al celular, y la empresa destaca reglas personalizadas, autorrevisión y permisos. No encontramos un defensor independiente de peso. Entre los creadores, Chase AI y SkillLeap (con acceso anticipado) fueron los más positivos.</p></div>
+</div></section>
+
+<section id="criadores"><div class="wrap">
+  <span class="chip">5 videos analizados</span>
+  <h2>Lo que dicen los creadores</h2>
+  <p class="sub">Cada video probó un ángulo distinto. Fíjate en quién tuvo acceso anticipado.</p>
+  <div class="grid g3">
+    <div class="card"><span class="badge b-mut">Sin acceso anticipado</span><h3>Jack — AI Automations</h3><p>Probó Dots contra Grokbot y Hermes. Para principiantes recomienda Grokbot o Dots; para quien le gusta trastear, Hermes. Considera que Dots está “algunas semanas atrás” de Grokbot en madurez.</p></div>
+    <div class="card"><span class="badge b-mut">Sin acceso anticipado</span><h3>Dots × Muse (doblado en bengalí)</h3><p>Para él, Dots parece “hecho a las apuradas”, lleno de bugs y con una interfaz débil. Para personas no técnicas recomienda Muse; él mismo se queda con Dots porque ya vive en Codex.</p></div>
+    <div class="card"><span class="badge b-ok">Acceso anticipado</span><h3>Chase AI</h3><p>Ve tres ventajas: orquestación remota, computadora siempre encendida y proactividad. Dice que vale para quien trabaja en remoto con Codex y que, para el resto, es un “bueno de tener”.</p></div>
+    <div class="card"><span class="badge b-ok">Acceso anticipado</span><h3>SkillLeap</h3><p>La mayor ventaja, para él, es la continuidad: un lugar central para delegarlo todo. Reconoce bugs: navegador en la nube y tareas programadas.</p></div>
+    <div class="card"><span class="badge b-bad">Crítico</span><h3>Reseña sin hype</h3><p>“Una instalación glorificada de Codex.” No ve motivo para subir del plan de $20 al de $100. Quien ya usa Grokbot o Hermes debe quedarse donde está.</p></div>
+    <div class="card"><h3>📌 Consenso</h3><p>Tiene el modelo más fuerte y la mejor integración con Codex. Pierde en madurez, interfaz y precio. Por ahora, el uso de Dots no cuenta en tu cuota semanal, con carácter promocional.</p></div>
+  </div>
+</div></section>
+
+<section id="linha"><div class="wrap">
+  <span class="chip">Línea de tiempo</span>
+  <h2>Cómo llegamos hasta aquí</h2>
+  <p class="sub">La carrera de los asistentes siempre activos en 2026.</p>
+  <div class="phase"><div class="tag">11/08</div><div class="d"><strong>Grokbot entra en beta</strong><span>xAI abre el agente con varios bots conversando entre sí, desde $20.</span></div></div>
+  <div class="phase"><div class="tag">08/09</div><div class="d"><strong>Meta lanza Muse</strong><span>Tiene plan gratis y se vuelve la app nº 1 de la App Store.</span></div></div>
+  <div class="phase"><div class="tag">28/09</div><div class="d"><strong>Recorte de cuota en Pro</strong><span>El Pro de $200 pasa de 20x a 10x el Plus para nuevos suscriptores.</span></div></div>
+  <div class="phase"><div class="tag">29/09</div><div class="d"><strong>DevDay: se lanza Dots</strong><span>Con GPT-6 Astra, demo en vivo con fallos y protesta en la puerta.</span></div></div>
+  <div class="phase"><div class="tag">30/10</div><div class="d"><strong>El recorte rige para todos</strong><span>Los suscriptores antiguos pierden los 20x, y GPT-6 Pro baja a 100 mensajes por semana.</span></div></div>
+  <div class="phase"><div class="tag">Futuro</div><div class="d"><strong>Prometido por OpenAI</strong><span>Varios Dots trabajando juntos, correo propio, pagos y (quizás) el plan Plus.</span></div></div>
+</div></section>
+
+<section id="veredito"><div class="wrap">
+  <span class="chip">Veredicto</span>
+  <h2>¿Vale la pena?</h2>
+  <p class="sub">Vale si ya pagas el Pro y vives en Codex. No vale la pena suscribirse al Pro solo por él, al menos por ahora.</p>
+  <div class="grid g3">
+    <div class="card verdict"><h3>✅ Úsalo</h3><p>Si ya pagas el Pro, coordinas varios proyectos en Codex y trabajas lejos de la computadora. Aprovéchalo mientras el uso no cuenta en la cuota.</p></div>
+    <div class="card verdict"><h3>⏳ Espera</h3><p>Si estás en el Plus. Por $100 más, hoy te llevas un producto en beta. Los bugs deberían corregirse en semanas, y Dots podría llegar al Plus.</p></div>
+    <div class="card verdict"><h3>↔️ Quédate donde estás</h3><p>Si ya usas Grokbot, Hermes o tu propio setup. Si no eres técnico, el Muse gratis ofrece una mejor experiencia.</p></div>
+  </div>
+  <div class="note" style="margin-top:20px">⚠️ <b>Seguridad:</b> un agente con navegador, contraseñas y acceso a Gmail/Drive amplía la superficie de ataque (prompt injection, acciones irreversibles). Habilita el mínimo de conectores, revisa las aprobaciones y evita usar cuentas críticas en la computadora del Dot.</div>
+</div></section>
+
+<section id="fontes"><div class="wrap">
+  <span class="chip">Fuentes y limitaciones</span>
+  <h2>De dónde salió cada dato</h2>
+  <p class="sub">Cuatro de las cinco transcripciones llegaron traducidas por máquina (alemán, bengalí, mezclas con portugués), por eso algunos nombres varían entre las fuentes. Ejemplos: “Astro/Astra”, “Soul 5.1/6.1”. Tech Times dice que una versión “6.1” de Astra fue cancelada, lo que entra en conflicto con los videos.</p>
+  <ul class="srcs">
+    <li>Video: <a href="https://www.youtube.com/watch?v=lQU5RX8EyWw" target="_blank" rel="noopener">I Tested ChatGPT Dot vs GrokBot (Not Even Close)</a> — Jack, AI Automations</li>
+    <li>Videos: Chase AI, SkillLeap, comparativa Dots × Muse y reseña crítica (transcripciones proporcionadas)</li>
+    <li><a href="https://futurism.com/artificial-intelligence/openai-agent-fails-live-demo" target="_blank" rel="noopener">Futurism — demo fallida</a></li>
+    <li><a href="https://simonwillison.net/2026/Sep/29/openai-devday-2026-live-blog/" target="_blank" rel="noopener">Simon Willison — live blog del DevDay 2026</a></li>
+    <li><a href="https://www.nbcnews.com/tech/tech-news/openai-launches-dots-ai-agents-safety-questions-rcna600338" target="_blank" rel="noopener">NBC News — lanzamiento y cuestiones de seguridad</a></li>
+    <li><a href="https://www.techtimes.com/articles/328286/20260930/openai-dots-launched-hacked-hugging-face-leaked-images-go-unresolved.htm" target="_blank" rel="noopener">Tech Times — incidentes sin resolver</a></li>
+    <li><a href="https://kingy.ai/news/chatgpt-pro-200-usage-cut/" target="_blank" rel="noopener">Kingy.ai — recorte de cuota del Pro $200</a></li>
+    <li><a href="https://www.tomsguide.com/ai/openai-just-launched-dots-heres-why-most-chatgpt-users-cant-try-them-yet" target="_blank" rel="noopener">Tom’s Guide — por qué la mayoría no puede probarlo</a></li>
+    <li><a href="https://mixed-news.com/en/openai-chatgpt-dots-exclude-pro-eea-switzerland-uk/" target="_blank" rel="noopener">Mixed-news — exclusión de EEE, Suiza y UK</a></li>
+    <li><a href="https://llmtracker.de/en/news/openai-s-dots-gamble-always-on-agents-cutesy-branding-and-a-community-that-isn-t" target="_blank" rel="noopener">llmtracker — reacción de la comunidad (agregador)</a></li>
+    <li><a href="https://github.com/openai/codex/issues/49766" target="_blank" rel="noopener">GitHub openai/codex #49766</a> (vista solo en un resumen de búsqueda)</li>
+    <li><a href="https://help.openai.com/en/articles/20001529-dots-privacy-security-and-safety-faqs" target="_blank" rel="noopener">OpenAI — FAQ de privacidad y seguridad de Dots</a></li>
+  </ul>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">5 videos</div><div class="pill">11 fuentes web</div><div class="pill">Investigación el 01/10/2026</div>
+    <p style="margin-top:18px">OpenAI Dots — análisis independiente, sin patrocinio ·
+      <a href="https://github.com/inematds/dot">inematds/dot</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='dot-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    try{ if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; } }catch(e){}
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      try{ localStorage.setItem(KEY, light?'light':'dark'); }catch(e){}
+    });
+    var R={
+      dev:['Dots','Ya vives en ChatGPT/Codex: Dots hereda memoria, plugins y skills y orquesta tus hilos, incluso desde el celular. Es el caso de uso en el que más se destaca.'],
+      leigo:['Muse','La interfaz es más clara (Hoy, Aprobaciones, Ideas, Feed), tiene WhatsApp nativo y plan gratis. Los creadores recomiendan Muse para padres y amigos no técnicos.'],
+      barato:['Grokbot','Empieza en $20/mes, es maduro y fácil de configurar. Dots exige al menos $100/mes.'],
+      nerd:['Hermes Agent','Open source, corre en tu PC o VPS, usa cualquier modelo (incluso local) y tiene memoria editable. Exige más trabajo técnico.'],
+      eu:['Muse, Grokbot o Hermes','Dots en el plan Pro no está disponible en el EEE, Reino Unido y Suiza. Solo Business Premium tiene Dots en todas las regiones.']
+    };
+    var out=document.getElementById('pickOut');
+    document.querySelectorAll('#picker button').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        document.querySelectorAll('#picker button').forEach(function(x){x.classList.remove('on')});
+        btn.classList.add('on');
+        var r=R[btn.dataset.k];
+        out.innerHTML='<h3>→ '+r[0]+'</h3><p>'+r[1]+'</p>';
+      });
+    });
+  })();
+</script>
+</body>
+</html>
